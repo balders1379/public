@@ -2,6 +2,7 @@
     "pairs": [
         "BTC/USDT:USDT",
         "ETH/USDT:USDT",
-        "SOL/USDT:USDT"
+        "SOL/USDT:USDT",
+        "USDC/USDT:USDT"
     ]
 }
