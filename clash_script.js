@@ -1,6 +1,5 @@
 // extend.js
 function main(config) {
-
     rules_map = {
         "Google" : [
             "google.com",
@@ -29,14 +28,14 @@ function main(config) {
             "chatgpt.com"
         ]
     };
-  
+    
     rules_other = [
       "MATCH, ✈️Final"
     ];
     
     // 自动获取所有节点名
     allProxies = [];
-  
+    
     // 如果配置中有 proxies 字段（静态节点）
     if (Array.isArray(config.proxies)) {
       //allProxies.push("Deflult");
@@ -44,7 +43,7 @@ function main(config) {
         if (proxy.name) allProxies.push(proxy.name);
       }
     }
-  
+    
     // 如果是 proxy-providers 模式（更常见）
     if (config["proxy-providers"]) {
       for (const provider of Object.values(config["proxy-providers"])) {
@@ -55,7 +54,7 @@ function main(config) {
         }
       }
     }
-  
+    
     config["rules"] = [];
     config["proxy-groups"] = [{
       name: "Default",
@@ -72,15 +71,14 @@ function main(config) {
             proxies: ["Default", ...allProxies]
         });
     }
-  
-  
+    
     config["proxy-groups"].push({
       name: "✈️Final",
       type: "select",
-      proxies: allProxies
+      proxies: ["Default", ...allProxies]
     });
     config["rules"] = config["rules"].concat(rules_other);
-  
+    
     return config;
   }
   
