@@ -62,8 +62,10 @@ function main(config) {
   config["rules"] = [];
   config["proxy-groups"] = [{
     name: "Default",
-    type: "select",
-    proxies: allProxies
+    type: "fallback",
+    proxies: allProxies.filter(p => /低倍率/.test(p)),
+    url: "http://www.gstatic.com/generate_204",
+    interval: 300
   }];
   
   for (let rule_name in rules_map) {
@@ -83,11 +85,29 @@ function main(config) {
       }
     }
     config["rules"] = config["rules"].concat(rule_array);
-    config["proxy-groups"].push({
+    if (rule_name == "Transfer") {
+      config["proxy-groups"].push({
+        name: rule_name,
+        type: "fallback",
+        proxies: allProxies.filter(p => /英国/.test(p)),
+        url: "http://www.gstatic.com/generate_204",
+        interval: 300
+      });
+    } else if (rule_name == "AI") {
+      config["proxy-groups"].push({
+        name: rule_name,
+        type: "fallback",
+        proxies: allProxies.filter(p => /美国/.test(p)),
+        url: "http://www.gstatic.com/generate_204",
+        interval: 300
+      });
+    } else {
+      config["proxy-groups"].push({
         name: rule_name,
         type: "select",
         proxies: ["Default", ...allProxies]
-    });
+      });
+    }
   }
   
   config["proxy-groups"].push({
