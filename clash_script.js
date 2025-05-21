@@ -65,7 +65,7 @@ function main(config) {
   config["proxy-groups"] = [{
     name: "Default",
     type: "fallback",
-    proxies: allProxies.filter(p => /低倍率/.test(p)),
+    proxies: proxies_filter(allProxies, "低倍率", null),
     url: fallback_url,
     interval: 300
   }];
@@ -91,7 +91,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: allProxies.filter(p => /英国/.test(p)),
+        proxies: proxies_filter(allProxies, "英国", null),
         url: fallback_url,
         interval: 300
       });
@@ -99,7 +99,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: allProxies.filter(p => /美国/.test(p)),
+        proxies: proxies_filter(allProxies, "美国", null),
         url: fallback_url,
         interval: 300
       });
@@ -107,7 +107,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: allProxies.filter(p => /日本/.test(p) && !/低倍率/.test(p)),
+        proxies: proxies_filter(allProxies, "日本", "低倍率"),
         url: fallback_url,
         interval: 300
       });
@@ -123,13 +123,32 @@ function main(config) {
   config["proxy-groups"].push({
     name: "✈️Final",
     type: "fallback",
-    proxies: allProxies.filter(p => /低倍率/.test(p)),
+    proxies: proxies_filter(allProxies, "低倍率", null),
     url: fallback_url,
     interval: 300
   });
   config["rules"] = config["rules"].concat(rules_other);
   
   return config;
+}
+
+function proxies_filter(all_proxies, include, exclude) {
+  // 统一为数组处理
+  include = Array.isArray(include) ? include : [include];
+  exclude = Array.isArray(exclude) ? exclude : [exclude];
+
+  let result = all_proxies.filter(p => {
+    // 必须包含 include 中所有关键词
+    const include_ok = include.every(key => new RegExp(key, 'i').test(p));
+
+    // 不得包含 exclude 中任一关键词
+    const exclude_ok = exclude.every(key => !new RegExp(key, 'i').test(p));
+
+    return include_ok && exclude_ok;
+  });
+
+  // 如果筛不到任何节点，则返回全部，避免出错
+  return result.length > 0 ? result : all_proxies;
 }
 
 function isIPv4WithMask(rule) {
