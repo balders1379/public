@@ -58,13 +58,15 @@ function main(config) {
       }
     }
   }
+
+  fallback_url = "http://www.gstatic.com/generate_204";
   
   config["rules"] = [];
   config["proxy-groups"] = [{
     name: "Default",
     type: "fallback",
     proxies: allProxies.filter(p => /低倍率/.test(p)),
-    url: "http://www.gstatic.com/generate_204",
+    url: fallback_url,
     interval: 300
   }];
   
@@ -90,7 +92,7 @@ function main(config) {
         name: rule_name,
         type: "fallback",
         proxies: allProxies.filter(p => /英国/.test(p)),
-        url: "http://www.gstatic.com/generate_204",
+        url: fallback_url,
         interval: 300
       });
     } else if (rule_name == "AI") {
@@ -98,7 +100,7 @@ function main(config) {
         name: rule_name,
         type: "fallback",
         proxies: allProxies.filter(p => /美国/.test(p)),
-        url: "http://www.gstatic.com/generate_204",
+        url: fallback_url,
         interval: 300
       });
     } else if (rule_name == "Exchange") {
@@ -106,7 +108,7 @@ function main(config) {
         name: rule_name,
         type: "fallback",
         proxies: allProxies.filter(p => /日本/.test(p) && !/低倍率/.test(p)),
-        url: "http://www.gstatic.com/generate_204",
+        url: fallback_url,
         interval: 300
       });
     } else {
@@ -120,8 +122,10 @@ function main(config) {
   
   config["proxy-groups"].push({
     name: "✈️Final",
-    type: "select",
-    proxies: ["Default", ...allProxies]
+    type: "fallback",
+    proxies: allProxies.filter(p => /低倍率/.test(p)),
+    url: fallback_url,
+    interval: 300
   });
   config["rules"] = config["rules"].concat(rules_other);
   
