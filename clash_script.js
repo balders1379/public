@@ -101,6 +101,14 @@ function main(config) {
         url: "http://www.gstatic.com/generate_204",
         interval: 300
       });
+    } else if (rule_name == "Exchange") {
+      config["proxy-groups"].push({
+        name: rule_name,
+        type: "fallback",
+        proxies: allProxies.filter(p => /日本/.test(p) && !/低倍率/.test(p)),
+        url: "http://www.gstatic.com/generate_204",
+        interval: 300
+      });
     } else {
       config["proxy-groups"].push({
         name: rule_name,
