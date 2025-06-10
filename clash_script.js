@@ -12,15 +12,19 @@ function main(config) {
           "walletconnect.org"
       ],
       "AI" : [
-          "chatgpt.com"
+          "chatgpt.com",
+          "openai.com"
       ],
       "Telegram" : [
+          "telegram.org",
           "149.154.175.50/8",
           "91.108.56.102/8"
       ],
       "Google" : [
           "google.com",
           "google.com.hk",
+          "googletagmanager.com",
+          "googleusercontent.com",
           "youtube.com",
           "googlevideo.com",
           "ytimg.com",
@@ -29,8 +33,24 @@ function main(config) {
           "gmail.com",
           "gstatic.com",
           "google-analytics.com",
-          "clarity.ms"
+          "clarity.ms",
+          "github.com",
+          "publiciptv.com",
+          "bbci.co.uk"
       ],
+      "Germany" : [
+        "vodafone.de",
+        "vodafone.com",
+        "n26.com"
+      ],
+      "Plugin" : [
+        "intercom.io",
+        "yandex.ru",
+        "doubleclick.net"
+      ],
+      "CDN" : [
+        "oaistatic.com"
+      ]
   };
   
   rules_other = [
@@ -91,7 +111,15 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "英国", null),
+        proxies: proxies_filter(allProxies, "英国", "低倍率"),
+        url: fallback_url,
+        interval: 300
+      });
+    } else if (rule_name == "deguo") {
+      config["proxy-groups"].push({
+        name: rule_name,
+        type: "fallback",
+        proxies: proxies_filter(allProxies, "德国", null),
         url: fallback_url,
         interval: 300
       });
@@ -99,7 +127,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "美国", null),
+        proxies: proxies_filter(allProxies, "美国", "低倍率"),
         url: fallback_url,
         interval: 300
       });
@@ -108,6 +136,14 @@ function main(config) {
         name: rule_name,
         type: "fallback",
         proxies: proxies_filter(allProxies, "日本", "低倍率"),
+        url: fallback_url,
+        interval: 300
+      });
+    } else if (["Plugin", "CDN"].includes(rule_name)) {
+      config["proxy-groups"].push({
+        name: rule_name,
+        type: "fallback",
+        proxies: proxies_filter(allProxies, "低倍率", null),
         url: fallback_url,
         interval: 300
       });
