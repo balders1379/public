@@ -115,7 +115,7 @@ function main(config) {
         url: fallback_url,
         interval: 300
       });
-    } else if (rule_name == "deguo") {
+    } else if (rule_name == "Germany") {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
