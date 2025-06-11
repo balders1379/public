@@ -58,13 +58,29 @@ function main(config) {
   ];
   
   // 自动获取所有节点名
-  allProxies = [];
+  let allProxies_wifi = [];
+  let allProxies_ethernet = [];
   
-  // 如果配置中有 proxies 字段（静态节点）
+  // 如果配置中有 proxies 字段（静态节点）Wi-Fi
+  let proxies_wifi = [];
   if (Array.isArray(config.proxies)) {
-    //allProxies.push("Deflult");
-    for (const proxy of config.proxies) {
-      if (proxy.name) allProxies.push(proxy.name);
+    proxies_wifi = config.proxies.map(proxy => ({
+      ...proxy,
+      "interface-name": "Wi-Fi"
+    }));
+    for (const proxy of proxies_wifi) {
+      if (proxy.name) allProxies_wifi.push(proxy.name);
+    }
+  }
+  // 如果配置中有 proxies 字段（静态节点）以太网
+  let proxies_ethernet = [];
+  if (Array.isArray(config.proxies)) {
+    proxies_ethernet = config.proxies.map(proxy => ({
+      ...proxy,
+      "interface-name": "Ethernet"
+    }));
+    for (const proxy of proxies_ethernet) {
+      if (proxy.name) allProxies_ethernet.push(proxy.name);
     }
   }
   
@@ -73,7 +89,7 @@ function main(config) {
     for (const provider of Object.values(config["proxy-providers"])) {
       if (provider.proxies && Array.isArray(provider.proxies)) {
         for (const proxy of provider.proxies) {
-          if (proxy.name) allProxies.push(proxy.name);
+          if (proxy.name) allProxies_wifi.push(proxy.name);
         }
       }
     }
@@ -85,7 +101,7 @@ function main(config) {
   config["proxy-groups"] = [{
     name: "Default",
     type: "fallback",
-    proxies: proxies_filter(allProxies, "低倍率", null),
+    proxies: proxies_filter(allProxies_wifi, "低倍率", null),
     url: fallback_url,
     interval: 300
   }];
@@ -111,7 +127,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "英国", "低倍率"),
+        proxies: proxies_filter(allProxies_wifi, "英国", "低倍率"),
         url: fallback_url,
         interval: 300
       });
@@ -119,7 +135,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "德国", null),
+        proxies: proxies_filter(allProxies_wifi, "德国", null),
         url: fallback_url,
         interval: 300
       });
@@ -127,7 +143,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "美国", "低倍率"),
+        proxies: proxies_filter(allProxies_wifi, "美国", "低倍率"),
         url: fallback_url,
         interval: 300
       });
@@ -135,7 +151,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "日本", "低倍率"),
+        proxies: proxies_filter(allProxies_wifi, "日本", "低倍率"),
         url: fallback_url,
         interval: 300
       });
@@ -143,7 +159,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies, "低倍率", null),
+        proxies: proxies_filter(allProxies_wifi, "低倍率", null),
         url: fallback_url,
         interval: 300
       });
@@ -151,7 +167,7 @@ function main(config) {
       config["proxy-groups"].push({
         name: rule_name,
         type: "select",
-        proxies: ["Default", ...allProxies]
+        proxies: ["Default", ...allProxies_wifi]
       });
     }
   }
@@ -159,7 +175,7 @@ function main(config) {
   config["proxy-groups"].push({
     name: "✈️Final",
     type: "fallback",
-    proxies: proxies_filter(allProxies, "低倍率", null),
+    proxies: proxies_filter(allProxies_wifi, "低倍率", null),
     url: fallback_url,
     interval: 300
   });
