@@ -59,13 +59,14 @@ function main(config) {
   
   // 自动获取所有节点名
   let allProxies_wifi = [];
-  let allProxies_ethernet = [];
+  let allProxies_eth = [];
   
   // 如果配置中有 proxies 字段（静态节点）Wi-Fi
   let proxies_wifi = [];
   if (Array.isArray(config.proxies)) {
     proxies_wifi = config.proxies.map(proxy => ({
       ...proxy,
+      name: proxy.name + '|wifi',
       "interface-name": "Wi-Fi"
     }));
     for (const proxy of proxies_wifi) {
@@ -73,30 +74,20 @@ function main(config) {
     }
   }
   // 如果配置中有 proxies 字段（静态节点）以太网
-  let proxies_ethernet = [];
+  let proxies_eth = [];
   if (Array.isArray(config.proxies)) {
-    proxies_ethernet = config.proxies.map(proxy => ({
+    proxies_eth = config.proxies.map(proxy => ({
       ...proxy,
+      name: proxy.name + '|eth',
       "interface-name": "Ethernet"
     }));
-    for (const proxy of proxies_ethernet) {
-      if (proxy.name) allProxies_ethernet.push(proxy.name);
+    for (const proxy of proxies_eth) {
+      if (proxy.name) allProxies_eth.push(proxy.name);
     }
   }
 
-  config["proxies"] = proxies_wifi;
+  config["proxies"] = proxies_wifi.concat(proxies_eth);
   
-  // 如果是 proxy-providers 模式（更常见）
-  if (config["proxy-providers"]) {
-    for (const provider of Object.values(config["proxy-providers"])) {
-      if (provider.proxies && Array.isArray(provider.proxies)) {
-        for (const proxy of provider.proxies) {
-          if (proxy.name) allProxies_wifi.push(proxy.name);
-        }
-      }
-    }
-  }
-
   fallback_url = "http://www.gstatic.com/generate_204";
   
   config["rules"] = [];
@@ -149,11 +140,19 @@ function main(config) {
         url: fallback_url,
         interval: 300
       });
+    } else if (rule_name == "Telegram") {
+      config["proxy-groups"].push({
+        name: rule_name,
+        type: "fallback",
+        proxies: proxies_filter(allProxies_eth, "日本", "低倍率"),
+        url: fallback_url,
+        interval: 300
+      });
     } else if (rule_name == "Exchange") {
       config["proxy-groups"].push({
         name: rule_name,
         type: "fallback",
-        proxies: proxies_filter(allProxies_wifi, "日本", "低倍率"),
+        proxies: proxies_filter(allProxies_eth, "日本", "低倍率"),
         url: fallback_url,
         interval: 300
       });
