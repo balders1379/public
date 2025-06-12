@@ -83,6 +83,8 @@ function main(config) {
       if (proxy.name) allProxies_ethernet.push(proxy.name);
     }
   }
+
+  config["proxies"] = proxies_wifi;
   
   // 如果是 proxy-providers 模式（更常见）
   if (config["proxy-providers"]) {
