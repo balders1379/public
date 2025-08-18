@@ -5,19 +5,37 @@ function main(config, profileName) {
     "DOMAIN-SUFFIX,okx.com,Exchange",
     "DOMAIN-SUFFIX,binance.com,Exchange",
     "DOMAIN-SUFFIX,tradingview.com,Exchange",
+    "DOMAIN-SUFFIX,okcoin.com,Exchange",
+    "DOMAIN-SUFFIX,kraken.com,Exchange",
+    "DOMAIN-SUFFIX,wise.com,Exchange",
     "DOMAIN-SUFFIX,openai.com,AI",
     "DOMAIN-SUFFIX,chatgpt.com,AI",
-    "DOMAIN-SUFFIX,netflix.com,Google",
-    "DOMAIN-SUFFIX,youtube.com,Google",
+    "IP-CIDR,43.248.101.179/32,Telegram",
+    "DOMAIN-SUFFIX,google.com,Google",
+    "DOMAIN-SUFFIX,googleusercontent.com,Google",
+    "DOMAIN-SUFFIX,google-analytics.com,Google",
+    "DOMAIN-SUFFIX,google.com.tw,Google",
+    "DOMAIN-SUFFIX,google.com.hk,Google",
+    "DOMAIN-SUFFIX,google.co.jp,Google",
+    "DOMAIN-SUFFIX,youtube.com,YouTube",
+    "DOMAIN-SUFFIX,youtubei.googleapis.com,YouTube",
+    "DOMAIN-SUFFIX,youtube.com,YouTube",
+    "DOMAIN-SUFFIX,googlevideo.com,YouTube",
+    "DOMAIN-SUFFIX,twitter.com,Twitter",
+    "DOMAIN-SUFFIX,twimg.com,Twitter",
+    "DOMAIN-SUFFIX,github.com,Develop",
     "MATCH,Default"
   ];
 
   // 🌍 公共分组（所有订阅共用）
   const commonGroups = [
     { name: "Exchange", group: "日本" },
-    { name: "AI", group: "美国" },
+    { name: "AI", group: "美国省流" },
     { name: "Telegram", group: "日本省流" },
     { name: "Google", group: "日本省流" },
+    { name: "YouTube", group: "日本省流" },
+    { name: "Twitter", group: "日本省流" },
+    { name: "Develop", group: "日本省流" },
   ];
 
   // 🔧 每个订阅的自定义分组（只管建组，规则统一用 commonRules）
@@ -30,6 +48,7 @@ function main(config, profileName) {
       { name: "新加坡", keyword: "狮城" },
       { name: "台湾", keyword: "台湾" },
       { name: "美国", keyword: "美国" },
+      { name: "美国省流", keyword: "美国&[0.2]" },
       { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
       { name: "省流", keyword: "[0.2]" },
       { name: "港+新", keyword: "香港|狮城" },   // OR 示例
@@ -42,6 +61,7 @@ function main(config, profileName) {
       { name: "新加坡", keyword: "狮城" },
       { name: "台湾", keyword: "台湾" },
       { name: "美国", keyword: "美国" },
+      { name: "美国省流", keyword: "美国&[0.2]" },
       { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
       { name: "省流", keyword: "[0.2]" },
       { name: "港+新", keyword: "香港|狮城" },   // OR 示例
