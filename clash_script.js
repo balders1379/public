@@ -10,7 +10,7 @@ function main(config, profileName) {
     "DOMAIN-SUFFIX,wise.com,Exchange",
     "DOMAIN-SUFFIX,openai.com,AI",
     "DOMAIN-SUFFIX,chatgpt.com,AI",
-    "IP-CIDR,43.248.101.179/32,Telegram",no-resolve,
+    "IP-CIDR,43.248.101.179/32,Telegram,no-resolve",
     "DOMAIN-SUFFIX,google.com,Google",
     "DOMAIN-SUFFIX,googleusercontent.com,Google",
     "DOMAIN-SUFFIX,google-analytics.com,Google",
