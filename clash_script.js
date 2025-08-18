@@ -1,197 +1,119 @@
-// extend.js
-function main(config) {
-  rules_map = {
-      "Exchange" : [
-          "okx.com",
-          "tradingview.com",
-          "gmgn.ai"
-      ],
-      "Transfer" : [
-          "ifastgb.com",
-          "kraken.com",
-          "walletconnect.org"
-      ],
-      "AI" : [
-          "chatgpt.com"
-      ],
-      "Telegram" : [
-          "149.154.175.50/8",
-          "91.108.56.102/8"
-      ],
-      "Google" : [
-          "google.com",
-          "google.com.hk",
-          "youtube.com",
-          "googlevideo.com",
-          "ytimg.com",
-          "ggpht.com",
-          "withgoogle.com",
-          "gmail.com",
-          "gstatic.com",
-          "google-analytics.com",
-          "clarity.ms"
-      ],
-  };
-  
-  rules_other = [
-    "MATCH, ✈️Final"
+// Define main function (script entry)
+function main(config, profileName) {
+  // 🌍 公共规则（所有订阅共用）
+  const commonRules = [
+    "DOMAIN-SUFFIX,okx.com,Exchange",
+    "DOMAIN-SUFFIX,binance.com,Exchange",
+    "DOMAIN-SUFFIX,tradingview.com,Exchange",
+    "DOMAIN-SUFFIX,openai.com,AI",
+    "DOMAIN-SUFFIX,chatgpt.com,AI",
+    "DOMAIN-SUFFIX,netflix.com,Google",
+    "DOMAIN-SUFFIX,youtube.com,Google",
+    "MATCH,Default"
   ];
-  
-  // 自动获取所有节点名
-  allProxies = [];
-  
-  // 如果配置中有 proxies 字段（静态节点）
-  if (Array.isArray(config.proxies)) {
-    //allProxies.push("Deflult");
-    for (const proxy of config.proxies) {
-      if (proxy.name) allProxies.push(proxy.name);
-    }
-  }
-  
-  // 如果是 proxy-providers 模式（更常见）
-  if (config["proxy-providers"]) {
-    for (const provider of Object.values(config["proxy-providers"])) {
-      if (provider.proxies && Array.isArray(provider.proxies)) {
-        for (const proxy of provider.proxies) {
-          if (proxy.name) allProxies.push(proxy.name);
-        }
-      }
-    }
+
+  // 🌍 公共分组（所有订阅共用）
+  const commonGroups = [
+    { name: "Exchange", group: "日本" },
+    { name: "AI", group: "美国" },
+    { name: "Telegram", group: "日本省流" },
+    { name: "Google", group: "日本省流" },
+  ];
+
+  // 🔧 每个订阅的自定义分组（只管建组，规则统一用 commonRules）
+  const extensions = {
+    "ytoo": [
+      { name: "Default", keyword: "" },
+      { name: "日本", keyword: "日本![0.2]" },
+      { name: "日本省流", keyword: "日本&[0.2]" },
+      { name: "香港", keyword: "香港" },
+      { name: "新加坡", keyword: "狮城" },
+      { name: "台湾", keyword: "台湾" },
+      { name: "美国", keyword: "美国" },
+      { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
+      { name: "省流", keyword: "[0.2]" },
+      { name: "港+新", keyword: "香港|狮城" },   // OR 示例
+    ],
+    "juzi": [
+      { name: "Default", keyword: "" },
+      { name: "日本", keyword: "日本" },
+      { name: "日本省流", keyword: "日本&[0.2]" },
+      { name: "香港", keyword: "香港" },
+      { name: "新加坡", keyword: "狮城" },
+      { name: "台湾", keyword: "台湾" },
+      { name: "美国", keyword: "美国" },
+      { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
+      { name: "省流", keyword: "[0.2]" },
+      { name: "港+新", keyword: "香港|狮城" },   // OR 示例
+    ],
+  };
+
+  const groups = extensions[profileName];
+  if (!groups) {
+    return config;
   }
 
-  fallback_url = "http://www.gstatic.com/generate_204";
+  // 🚨 清空原有规则和代理组
+  config.rules = [];
+  config["proxy-groups"] = [];
+
+  const groupNames = [];
+
+  // 🔍 关键词匹配函数
+  function matchByKeyword(proxyName, keyword) {
+    // 分离排除项
+    let [includePart, excludePart] = keyword.split("!");
+    excludePart = excludePart ? excludePart.split("&") : [];
   
-  config["rules"] = [];
-  config["proxy-groups"] = [{
-    name: "Default",
-    type: "fallback",
-    proxies: proxies_filter(allProxies, "低倍率", null),
-    url: fallback_url,
-    interval: 300
-  }];
+    let includeMatch = false;
   
-  for (let rule_name in rules_map) {
-    let rule_array = [];
-    for (let rule of rules_map[rule_name]) {
-      // IPv4地址
-      if (isIPv4WithMask(rule)) {
-        rule_array.push("IP-CIDR," + rule + "," + rule_name + ",no-resolve");
-      }
-      // IPv6地址
-      if (isIPv6WithMask(rule)) {
-        rule_array.push("IP-CIDR6," + rule + "," + rule_name + ",no-resolve");
-      }
-      // 域名
-      else {
-        rule_array.push("DOMAIN-SUFFIX," + rule + "," + rule_name);
-      }
-    }
-    config["rules"] = config["rules"].concat(rule_array);
-    if (rule_name == "Transfer") {
-      config["proxy-groups"].push({
-        name: rule_name,
-        type: "fallback",
-        proxies: proxies_filter(allProxies, "英国", null),
-        url: fallback_url,
-        interval: 300
-      });
-    } else if (rule_name == "AI") {
-      config["proxy-groups"].push({
-        name: rule_name,
-        type: "fallback",
-        proxies: proxies_filter(allProxies, "美国", null),
-        url: fallback_url,
-        interval: 300
-      });
-    } else if (rule_name == "Exchange") {
-      config["proxy-groups"].push({
-        name: rule_name,
-        type: "fallback",
-        proxies: proxies_filter(allProxies, "日本", "低倍率"),
-        url: fallback_url,
-        interval: 300
-      });
+    if (includePart.includes("&")) {
+      // AND 逻辑
+      includeMatch = includePart.split("&").every(k => proxyName.includes(k));
+    } else if (includePart.includes("|")) {
+      // OR 逻辑
+      includeMatch = includePart.split("|").some(k => proxyName.includes(k));
     } else {
-      config["proxy-groups"].push({
-        name: rule_name,
-        type: "select",
-        proxies: ["Default", ...allProxies]
-      });
+      // 单关键词
+      includeMatch = proxyName.includes(includePart);
     }
+  
+    // 🚫 排除逻辑
+    let excludeMatch = excludePart.some(k => proxyName.includes(k));
+  
+    return includeMatch && !excludeMatch;
   }
-  
-  config["proxy-groups"].push({
-    name: "✈️Final",
-    type: "fallback",
-    proxies: proxies_filter(allProxies, "低倍率", null),
-    url: fallback_url,
-    interval: 300
+
+  // 遍历自定义分组
+  groups.forEach((group) => {
+    const matched = config.proxies
+      .filter((p) => matchByKeyword(p.name, group.keyword))
+      .map((p) => p.name);
+
+    config["proxy-groups"].push({
+      name: group.name,
+      type: "url-test",   // 🚀 自动测速
+      proxies: matched.length > 0 ? matched : ["DIRECT"],
+      url: "http://www.gstatic.com/generate_204",
+      interval: 300,
+      tolerance: 50
+    });
+
+    groupNames.push(group.name);
   });
-  config["rules"] = config["rules"].concat(rules_other);
-  
+
+  // 🚀 总控组（包含所有区域分组，方便切换）
+  commonGroups.forEach((group) => {
+    config["proxy-groups"].push({
+      name: group.name,
+      type: "select",
+      //proxies: [...groupNames, "DIRECT"],
+      proxies: [group.group]
+    });
+  });
+
+  // 公共规则
+  config.rules = [...commonRules];
+
   return config;
-}
-
-function proxies_filter(all_proxies, include, exclude) {
-  // 统一为数组处理
-  include = Array.isArray(include) ? include : [include];
-  exclude = Array.isArray(exclude) ? exclude : [exclude];
-
-  let result = all_proxies.filter(p => {
-    // 必须包含 include 中所有关键词
-    const include_ok = include.every(key => new RegExp(key, 'i').test(p));
-
-    // 不得包含 exclude 中任一关键词
-    const exclude_ok = exclude.every(key => !new RegExp(key, 'i').test(p));
-
-    return include_ok && exclude_ok;
-  });
-
-  // 如果筛不到任何节点，则返回全部，避免出错
-  return result.length > 0 ? result : all_proxies;
-}
-
-function isIPv4WithMask(rule) {
-  // Check if the string matches IPv4 CIDR notation (e.g., 127.0.0.0/8)
-  const parts = rule.split('/');
-  if (parts.length !== 2) return false;
-  
-  const [ip, mask] = parts;
-  const maskNum = parseInt(mask);
-  
-  // Validate mask range (0-32)
-  if (isNaN(maskNum) || maskNum < 0 || maskNum > 32) return false;
-  
-  // Validate IPv4 address
-  const octets = ip.split('.');
-  if (octets.length !== 4) return false;
-  
-  return octets.every(octet => {
-    const num = parseInt(octet);
-    return !isNaN(num) && num >= 0 && num <= 255;
-  });
-}
-
-function isIPv6WithMask(rule) {
-  // Check if the string matches IPv6 CIDR notation (e.g., 2001:67c:4e8::/48)
-  const parts = rule.split('/');
-  if (parts.length !== 2) return false;
-
-  const [ip, mask] = parts;
-  const maskNum = parseInt(mask);
-
-  // Validate mask range (0-128)
-  if (isNaN(maskNum) || maskNum < 0 || maskNum > 128) return false;
-
-  // Handle empty segments (::)
-  const normalizedIP = ip.replace('::', ':'.repeat(8 - ip.split(':').length + 1));
-
-  // Split into segments and validate
-  const segments = normalizedIP.split(':');
-  if (segments.length !== 8) return false;
-
-  return segments.every(segment => {
-    // Each segment should be a valid hex number between 0 and ffff
-    return /^[0-9A-Fa-f]{1,4}$/.test(segment);
-  });
 }
