@@ -27,6 +27,9 @@ function main(config, profileName) {
     "DOMAIN-SUFFIX,google.co.jp,Google",
     "DOMAIN-SUFFIX,gstatic.com,Google",
     "DOMAIN-SUFFIX,ggpht.com,Google",
+    "DOMAIN-SUFFIX,googletagmanager.com,Google",
+    "DOMAIN-SUFFIX,doubleclick.net,Google",
+    "DOMAIN-SUFFIX,gravatar.com,CDN",
     "DOMAIN-SUFFIX,youtube.com,YouTube",
     "DOMAIN-SUFFIX,youtubei.googleapis.com,YouTube",
     "DOMAIN-SUFFIX,youtube.com,YouTube",
@@ -47,6 +50,7 @@ function main(config, profileName) {
     { name: "YouTube", group: "日本省流" },
     { name: "Twitter", group: "日本省流" },
     { name: "Develop", group: "日本省流" },
+    { name: "CDN", group: "日本省流" },
   ];
 
   // 🔧 每个订阅的自定义分组（只管建组，规则统一用 commonRules）
