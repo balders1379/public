@@ -8,6 +8,7 @@ function main(config, profileName) {
     "DOMAIN-SUFFIX,okcoin.com,Exchange",
     "DOMAIN-SUFFIX,kraken.com,Exchange",
     "DOMAIN-SUFFIX,wise.com,Exchange",
+    "DOMAIN-SUFFIX,intercom.io,Exchange",
     "DOMAIN-SUFFIX,openai.com,AI",
     "DOMAIN-SUFFIX,chatgpt.com,AI",
     "DOMAIN-SUFFIX,oaistatic.com,AI",
@@ -66,7 +67,6 @@ function main(config, profileName) {
       { name: "美国省流", keyword: "美国&[0.2]" },
       { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
       { name: "省流", keyword: "[0.2]" },
-      { name: "港+新", keyword: "香港|狮城" },   // OR 示例
     ],
     "juzi": [
       { name: "Default", keyword: "" },
@@ -79,7 +79,6 @@ function main(config, profileName) {
       { name: "美国省流", keyword: "美国&x1.0" },
       { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
       { name: "省流", keyword: "x1.0" },
-      { name: "港+新", keyword: "香港|新加坡" },   // OR 示例
     ],
   };
 
