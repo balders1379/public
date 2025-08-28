@@ -82,6 +82,18 @@ function main(config, profileName) {
     ],
   };
 
+  // 🔧 每个订阅的节点 interface 映射
+  const extensionsInterface = {
+    "ytoo": {
+      "日本": "以太网",
+      "日本省流": "WLAN"
+    },
+    "juzi": {
+      "日本": "以太网",
+      "日本省流": "WLAN"
+    }
+  };
+
   const groups = extensions[profileName];
   if (!groups) {
     return config;
@@ -98,9 +110,9 @@ function main(config, profileName) {
     // 分离排除项
     let [includePart, excludePart] = keyword.split("!");
     excludePart = excludePart ? excludePart.split("&") : [];
-  
+
     let includeMatch = false;
-  
+
     if (includePart.includes("&")) {
       // AND 逻辑
       includeMatch = includePart.split("&").every(k => proxyName.includes(k));
@@ -111,10 +123,10 @@ function main(config, profileName) {
       // 单关键词
       includeMatch = proxyName.includes(includePart);
     }
-  
+
     // 🚫 排除逻辑
     let excludeMatch = excludePart.some(k => proxyName.includes(k));
-  
+
     return includeMatch && !excludeMatch;
   }
 
@@ -122,7 +134,21 @@ function main(config, profileName) {
   groups.forEach((group) => {
     const matched = config.proxies
       .filter((p) => matchByKeyword(p.name, group.keyword))
-      .map((p) => p.name);
+      .map((p) => {
+        // 🚀 如果 extensionsInterface 有 interface，创建节点副本并添加 interface-name
+        const ifaceMap = extensionsInterface[profileName] || {};
+        if (ifaceMap[group.name]) {
+          // 创建节点副本
+          const proxyCopy = JSON.parse(JSON.stringify(p));
+          proxyCopy.name = `${p.name} [${group.name}]`;  // 添加分组名作为后缀以区分
+          proxyCopy["interface-name"] = ifaceMap[group.name];
+          
+          // 将新节点添加到代理列表
+          config.proxies.push(proxyCopy);
+          return proxyCopy.name;  // 返回新节点的名称
+        }
+        return p.name;
+      });
 
     config["proxy-groups"].push({
       name: group.name,
