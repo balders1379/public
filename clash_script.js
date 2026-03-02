@@ -45,10 +45,10 @@ function main(config, profileName) {
   // 🌍 公共分组（所有订阅共用）
   const commonGroups = [
     { name: "Exchange", group: "日本" },
-    { name: "AI", group: "美国省流" },
+    { name: "AI", group: "美国" },
     { name: "Telegram", group: "日本省流" },
-    { name: "Google", group: "日本省流" },
-    { name: "YouTube", group: "日本省流" },
+    { name: "Google", group: "美国" },
+    { name: "YouTube", group: "美国" },
     { name: "Twitter", group: "日本省流" },
     { name: "Develop", group: "日本省流" },
     { name: "CDN", group: "日本省流" },
@@ -70,7 +70,7 @@ function main(config, profileName) {
     ],
     "juzi": [
       { name: "Default", keyword: "" },
-      { name: "日本", keyword: "日本&x2.0" },
+      { name: "日本", keyword: "日本" },
       { name: "日本省流", keyword: "日本&x1.0" },
       { name: "香港", keyword: "香港" },
       { name: "新加坡", keyword: "新加坡" },
@@ -80,18 +80,6 @@ function main(config, profileName) {
       { name: "欧洲", keyword: "德国|伦敦|法国|荷兰|西班牙|意大利" },
       { name: "省流", keyword: "x1.0" },
     ],
-  };
-
-  // 🔧 每个订阅的节点 interface 映射
-  const extensionsInterface = {
-    "ytoo": {
-      "日本": "以太网",
-      "日本省流": "WLAN"
-    },
-    "juzi": {
-      "日本": "以太网",
-      "日本省流": "WLAN"
-    }
   };
 
   const groups = extensions[profileName];
@@ -110,9 +98,9 @@ function main(config, profileName) {
     // 分离排除项
     let [includePart, excludePart] = keyword.split("!");
     excludePart = excludePart ? excludePart.split("&") : [];
-
+  
     let includeMatch = false;
-
+  
     if (includePart.includes("&")) {
       // AND 逻辑
       includeMatch = includePart.split("&").every(k => proxyName.includes(k));
@@ -123,10 +111,10 @@ function main(config, profileName) {
       // 单关键词
       includeMatch = proxyName.includes(includePart);
     }
-
+  
     // 🚫 排除逻辑
     let excludeMatch = excludePart.some(k => proxyName.includes(k));
-
+  
     return includeMatch && !excludeMatch;
   }
 
@@ -134,21 +122,7 @@ function main(config, profileName) {
   groups.forEach((group) => {
     const matched = config.proxies
       .filter((p) => matchByKeyword(p.name, group.keyword))
-      .map((p) => {
-        // 🚀 如果 extensionsInterface 有 interface，创建节点副本并添加 interface-name
-        const ifaceMap = extensionsInterface[profileName] || {};
-        if (ifaceMap[group.name]) {
-          // 创建节点副本
-          const proxyCopy = JSON.parse(JSON.stringify(p));
-          proxyCopy.name = `${p.name} [${group.name}]`;  // 添加分组名作为后缀以区分
-          proxyCopy["interface-name"] = ifaceMap[group.name];
-          
-          // 将新节点添加到代理列表
-          config.proxies.push(proxyCopy);
-          return proxyCopy.name;  // 返回新节点的名称
-        }
-        return p.name;
-      });
+      .map((p) => p.name);
 
     config["proxy-groups"].push({
       name: group.name,
