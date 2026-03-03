@@ -1,4 +1,9 @@
 // Define main function (script entry)
+// 脚本作用：
+// 自动将不同的URL，导向不同区域的节点
+// 使用方法：
+// 1. 将clash verge中`订阅名称`修改为ytoo或juzi
+// 2. 在`全局扩展脚本`中，添加本代码
 function main(config, profileName) {
   // 🌍 公共规则（所有订阅共用）
   const commonRules = [
