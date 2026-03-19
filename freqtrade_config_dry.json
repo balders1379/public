@@ -1,15 +1,19 @@
 {
     "blacklist": [
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT",
+        "SOL/USDT:USDT",
+        "USDC/USDT:USDT"
+    ], 
+    "whitelist": [
         "IP/USDT:USDT",
         "GUN/USDT:USDT",
         "VINE/USDT:USDT",
         "FARTCOIN/USDT:USDT",
         "DOGE/USDT:USDT"
     ], 
-    "whitelist": [
-        "USDC/USDT:USDT"
-    ], 
     "oi_max": "5_000_000", 
     "oi_min": "2_000_000", 
-    "update_dt" : "2025-04-24 12:31:11"
+    
+    "update_dt" : "2026-03-19 12:31:11"
 }
