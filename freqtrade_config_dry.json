@@ -12,8 +12,8 @@
         "FARTCOIN/USDT:USDT",
         "DOGE/USDT:USDT"
     ], 
-    "oi_max": "5_000_000", 
-    "oi_min": "2_000_000", 
+    "oi_max": "5", 
+    "oi_min": "2", 
     
     "update_dt" : "2026-03-19 12:31:11"
 }
