@@ -12,7 +12,7 @@
         "FARTCOIN/USDT:USDT",
         "DOGE/USDT:USDT"
     ], 
-    "oi_max": "5", 
+    "oi_max": "25", 
     "oi_min": "2", 
     "vol_min": "15",
     
