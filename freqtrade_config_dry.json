@@ -3,18 +3,17 @@
         "BTC",
         "ETH",
         "SOL",
+        "LTC",
+        "OKB",
+        "DOGE",
+        "TRUMP",
         "USDC"
     ], 
     "whitelist": [
-        "IP",
-        "GUN",
-        "VINE",
-        "FARTCOIN",
-        "DOGE"
     ], 
     "oi_max": "25", 
     "oi_min": "2", 
     "vol_min": "15",
     
-    "update_dt" : "2026-03-19 12:31:11"
+    "update_dt" : "2026-03-23 12:31:11"
 }
